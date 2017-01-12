@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JayChenFE/webpack_demo.git"
+    "url": "git+https://github.com/JayChenFE/graduate_project/.git"
   },
   "keywords": [
     "webpackdemo"
@@ -24,7 +24,7 @@
   "author": "陈捷",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JayChenFE/webpack_demo/issues"
+    "url": "https://github.com/JayChenFE/graduate_project/issues"
   },
-  "homepage": "https://github.com/Panda-HJN/my-webpack-demo#readme"
+  "homepage": "https://github.com/JayChenFE/graduate_project#readme"
 }
