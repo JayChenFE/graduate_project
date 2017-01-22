@@ -6,6 +6,10 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="iconfont/iconfont.css">
     <style>
+    [v-cloak] {
+        display: none;
+    }
+    
     ul,
     li,
     p {
@@ -92,7 +96,7 @@
             <input type="text" placeholder="请输入代办事项" v-model="newTodo" @keypress.enter="addTodo">
         </div>
         <ul class="todos layout">
-            <li v-for="todo in todoList">
+            <li v-cloak v-for="todo in todoList">
                 <input type="checkbox" v-model="todo.done">
                 <span class="done" v-if="todo.done">已完成</span>
                 <span class="notDone" v-else>未完成</span>
