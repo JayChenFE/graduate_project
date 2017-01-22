@@ -46,9 +46,13 @@
 
 	'use strict';
 
-	var _vue = __webpack_require__(2);
+	var _vue = __webpack_require__(1);
 
 	var _vue2 = _interopRequireDefault(_vue);
+
+	var _utils = __webpack_require__(3);
+
+	var _utils2 = _interopRequireDefault(_utils);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -61,27 +65,33 @@
 		created: function created() {
 			var _this = this;
 
+			var TODODATA_KEY = 'myTodos';
+			var NEWTODO_KEY = 'myNewTodo';
+
+			//载入界面时从localStorage中取出保存数据
 			window.onbeforeunload = function () {
-				var dataString = JSON.stringify(_this.todoList);
-				window.localStorage.setItem('myTodos', dataString);
-				var todoString = JSON.stringify(_this.newTodo);
-				window.localStorage.setItem('myNewTodo', todoString);
+				_utils2.default.putLocalData(TODODATA_KEY, _this.todoList);
+				_utils2.default.putLocalData(NEWTODO_KEY, _this.newTodo);
 			};
 
-			var oldDataString = window.localStorage.getItem('myTodos');
-			var oldData = JSON.parse(oldDataString);
+			var oldData = _utils2.default.getLocalData(TODODATA_KEY);
 			this.todoList = oldData || [];
 
-			var oldTodoString = window.localStorage.getItem('myNewTodo');
-			var oldTodo = JSON.parse(oldTodoString);
+			var oldTodo = _utils2.default.getLocalData(NEWTODO_KEY);
 			this.newTodo = oldTodo || '';
 		},
+
 		methods: {
 			addTodo: function addTodo() {
+
+				if (!/\S/g.test(this.newTodo)) {
+					return alert('输入不能为空');
+				}
+
 				this.todoList.push({
 					title: this.newTodo,
-					createdAt: new Date(),
-					done: false // 添加一个 done 属性
+					createdAt: _utils2.default.formatDate(new Date()),
+					done: false
 				});
 				this.newTodo = '';
 			},
@@ -94,8 +104,7 @@
 	});
 
 /***/ },
-/* 1 */,
-/* 2 */
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process, global) {/*!
@@ -8614,10 +8623,10 @@
 
 	module.exports = Vue$3;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), (function() { return this; }())))
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -8801,6 +8810,65 @@
 	};
 	process.umask = function() { return 0; };
 
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = {
+		putLocalData: function putLocalData(key, src) {
+			window.localStorage.setItem(key, JSON.stringify(src));
+		},
+
+		getLocalData: function getLocalData(key) {
+			return JSON.parse(window.localStorage.getItem(key));
+		},
+
+		//格式化日期
+		//必填参数date,Date类型日期
+		//可选参数formatType,格式化类型,默认为1
+		formatDate: function formatDate(date, formatType) {
+
+			var fmt;
+			formatType = formatType || 1;
+
+			//方便以后扩展
+			switch (formatType) {
+				case 1:
+					fmt = "yyyy-MM-dd EE hh:mm:ss";
+					break;
+			}
+
+			var o = {
+				"M+": date.getMonth() + 1, //月份
+				"d+": date.getDate(), //日
+				"h+": date.getHours(), //小时
+				"m+": date.getMinutes(), //分
+				"s+": date.getSeconds(), //秒
+				"q+": Math.floor((date.getMonth() + 3) / 3), //季度
+				"S": date.getMilliseconds() //毫秒
+			};
+
+			if (/(y+)/.test(fmt)) {
+				fmt = fmt.replace(RegExp.$1, date.getFullYear().toString().substr(4 - RegExp.$1.length));
+			}
+
+			if (/(E+)/.test(fmt)) {
+				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length > 1 ? RegExp.$1.length > 2 ? "星期" : "周" : "") + "日一二三四五六"[date.getDay().toString()]);
+			}
+
+			for (var k in o) {
+				if (new RegExp("(" + k + ")").test(fmt)) {
+					fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(o[k].toString().length));
+				}
+			}return fmt;
+		}
+	};
 
 /***/ }
 /******/ ]);

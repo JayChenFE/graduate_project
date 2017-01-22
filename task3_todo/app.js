@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import utils from './utils'
 
 var app = new Vue({
 	el: '#app',
@@ -8,28 +9,33 @@ var app = new Vue({
 	},
 	created: function() {
 
-		window.onbeforeunload = () => {
-			let dataString = JSON.stringify(this.todoList);
-			window.localStorage.setItem('myTodos', dataString);
-			let todoString = JSON.stringify(this.newTodo);
-			window.localStorage.setItem('myNewTodo', todoString);
+		var TODODATA_KEY = 'myTodos';
+		var NEWTODO_KEY = 'myNewTodo';
 
+		//载入界面时从localStorage中取出保存数据
+		window.onbeforeunload = () => {
+			utils.putLocalData(TODODATA_KEY, this.todoList);
+			utils.putLocalData(NEWTODO_KEY, this.newTodo);
 		};
 
-		let oldDataString = window.localStorage.getItem('myTodos');
-		let oldData = JSON.parse(oldDataString);
+		let oldData = utils.getLocalData(TODODATA_KEY);
 		this.todoList = oldData || [];
 
-		let oldTodoString = window.localStorage.getItem('myNewTodo');
-		let oldTodo = JSON.parse(oldTodoString);
+		let oldTodo = utils.getLocalData(NEWTODO_KEY);
 		this.newTodo = oldTodo || '';
 	},
+
 	methods: {
 		addTodo: function() {
+
+			if (!/\S/g.test(this.newTodo)) {
+				return alert('输入不能为空');
+			}
+
 			this.todoList.push({
 				title: this.newTodo,
-				createdAt: new Date(),
-				done: false // 添加一个 done 属性
+				createdAt: utils.formatDate(new Date()),
+				done: false
 			});
 			this.newTodo = '';
 		},
