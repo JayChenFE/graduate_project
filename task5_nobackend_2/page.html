@@ -1,0 +1,154 @@
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <title>nobackend</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="iconfont/iconfont.css">
+    <style>
+    [v-cloak] {
+        display: none;
+    }
+    
+    ul,
+    li,
+    p {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        background-color: #51ccb7;
+        font-family: "Microsoft YaHei"
+    }
+    
+    .layout {
+        margin: 0 auto;
+        width: 1140px;
+    }
+    
+    .center {
+        text-align: center;
+    }
+    
+    #app {
+        margin-top: 100px;
+    }
+    
+    #app>div>p {
+        font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-align: font-weight: bold;
+        margin-top: 20px;
+        font-size: 30px;
+    }
+    
+    .icon-todo_list {
+        font-size: 80px;
+        color: black;
+    }
+    
+    .newTask input {
+        width: 100%;
+        height: 50px;
+        font-size: 30px;
+        text-align: center;
+        border-style: none;
+        margin-top: 40px;
+    }
+    
+    .todos {
+        width: 400px;
+        margin-top: 40px;
+    }
+    
+    .todos p {
+        margin: 10px 0 20px 33px;
+        padding: 10px;
+        text-align: left;
+        width: 334px;
+        background-color: #e0e0d0;
+    }
+    
+    .todos button {
+        background-color: #51ccb7;
+    }
+    
+    .todos li span {}
+    
+    .todos li span.done {
+        color: #C3DEB7;
+    }
+    
+    .todos li span.notDone {
+        color: red;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="center">
+        <section id="signInAndSignUp" v-if="!currentUser">
+            <div>
+                <label>
+                    <input type="radio" name="type" v-model="actionType" value="signUp">注册</label>
+                <label>
+                    <input type="radio" name="type" v-model="actionType" value="login">登入</label>
+            </div>
+            <div class="signUp" v-if="actionType=='signUp'">
+                <form @submit.prevent=signUp>
+                    <div class="formRow">
+                        用户名
+                        <input type="text" v-model="formData.username">
+                    </div>
+                    <div class="formRow">
+                        密码
+                        <input type="password" v-model="formData.password">
+                    </div>
+                    <div class="formActions">
+                        <input type="submit" value="注册">
+                    </div>
+                </form>
+            </div>
+            <div class="login" v-if="actionType=='login'">
+                <form @submit.prevent="login">
+                    <div class="formRow">
+                        用户名
+                        <input type="text" v-model="formData.username">
+                    </div>
+                    <div class="formRow">
+                        密码
+                        <input type="password" v-model="formData.password">
+                    </div>
+                    <div class="formActions">
+                        <input type="submit" value="登入">
+                    </div>
+                </form>
+            </div>
+        </section>
+        <section id="todo" v-if="currentUser">
+       <p>Hello, {{ formData.username }}</p>
+         <p><button @click="logout">登出</button></p>
+            <div class="layout">
+                <i class="iconfont icon-todo_list"></i>
+                <p>A TodoList Web APP</p>
+            </div>
+            <div class="newTask layout">
+                <input type="text" placeholder="请输入代办事项" v-model="newTodo" @keypress.enter="addTodo">
+            </div>
+            <ul class="todos layout">
+                <li v-cloak v-for="todo in todoList">
+                    <input type="checkbox" v-model="todo.done">
+                    <span class="done" v-if="todo.done">已完成</span>
+                    <span class="notDone" v-else>未完成</span>
+                    <span>创建时间:{{ todo.createdAt }}</span>
+                    <i class="iconfont icon-close" @click="removeTodo(todo)"></i>
+                    <p>{{ todo.title }}</p>
+                </li>
+            </ul>
+        </section>
+    </div>
+    <script src="bundle.js"></script>
+</body>
+
+</html>
