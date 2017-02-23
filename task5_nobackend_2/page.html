@@ -127,8 +127,10 @@
             </div>
         </section>
         <section id="todo" v-if="currentUser">
-       <p>Hello, {{ formData.username }}</p>
-         <p><button @click="logout">登出</button></p>
+            <p>Hello, {{ formData.username }}</p>
+            <p>
+                <button @click="logout">登出</button>
+            </p>
             <div class="layout">
                 <i class="iconfont icon-todo_list"></i>
                 <p>A TodoList Web APP</p>
@@ -138,7 +140,7 @@
             </div>
             <ul class="todos layout">
                 <li v-cloak v-for="todo in todoList">
-                    <input type="checkbox" v-model="todo.done">
+                    <input type="checkbox" v-model="todo.done" @click="saveOrUpdateTodos">
                     <span class="done" v-if="todo.done">已完成</span>
                     <span class="notDone" v-else>未完成</span>
                     <span>创建时间:{{ todo.createdAt }}</span>
